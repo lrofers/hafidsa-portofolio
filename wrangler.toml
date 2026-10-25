@@ -1,2 +1,5 @@
-# wrangler.toml
-name = 'hafidsa-portofolio'
+name = "hafidsa-portofolio"
+compatibility_date = "2026-10-25"
+
+[assets]
+directory = "./dist"
