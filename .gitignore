@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+.wrangler/
+.vite/
+test-output/
+dist-gallery-test/
+dist-e2e/
+.superpowers/
+tools/local-supabase/.scratch/

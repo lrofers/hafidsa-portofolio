@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tentang</title>
+  <meta name="description" content="Tentang pemilik portofolio.">
+  <meta name="theme-color" content="#f4efe7">
+  <meta property="og:title" content="Tentang">
+  <meta property="og:description" content="Tentang pemilik portofolio.">
+  <meta property="og:image" content="">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script type="module" src="/assets/js/main.js"></script>
+</head>
+<body data-page="about">
+  <a class="skip-link" href="#main">Lewati ke konten</a>
+  <header class="site-header site-header--solid">
+    <a class="brand" href="/" data-site="owner_name">Nama Anda</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Buka menu"><i data-lucide="menu"></i></button>
+    <nav id="site-nav" class="nav" aria-label="Utama">
+      <ul>
+        <li><a href="/">Galeri</a></li>
+        <li><a href="/projects.html" data-page-link="projects">Karya</a></li>
+        <li><a href="/about.html" data-page-link="about">Tentang</a></li>
+        <li><a href="/contact.html" data-page-link="contact">Kontak</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" class="page">
+    <div class="about">
+      <figure class="about__photo" id="about-photo" data-parallax-wrap></figure>
+      <div class="about__intro">
+        <p class="eyebrow" data-intro><span data-site="owner_role"></span></p>
+        <h1 class="display display--xl" id="about-heading" data-intro>Tentang</h1>
+        <div class="prose lead" id="about-bio" data-intro></div>
+      </div>
+    </div>
+
+    <section class="about-block" aria-labelledby="h-focus">
+      <h2 class="eyebrow" id="h-focus">Fokus kreatif</h2>
+      <div id="about-focus"></div>
+    </section>
+
+    <section class="about-block" aria-labelledby="h-exp">
+      <h2 class="eyebrow" id="h-exp">Pengalaman</h2>
+      <ol class="timeline" id="about-exp"></ol>
+    </section>
+
+    <section class="about-block" aria-labelledby="h-edu">
+      <h2 class="eyebrow" id="h-edu">Pendidikan</h2>
+      <ol class="timeline" id="about-edu"></ol>
+    </section>
+
+    <section class="about-block" aria-labelledby="h-skills" data-section="skills">
+      <h2 class="eyebrow" id="h-skills">Keahlian</h2>
+      <div class="skills-list" id="about-skills"></div>
+    </section>
+
+    <section class="about-block" aria-labelledby="h-sw" data-section="skills">
+      <h2 class="eyebrow" id="h-sw">Software</h2>
+      <div id="about-software"></div>
+    </section>
+
+    <section class="about-block" aria-labelledby="h-extra">
+      <h2 class="eyebrow" id="h-extra">Informasi tambahan</h2>
+      <div id="about-extra"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span data-year></span> <span data-site="owner_name"></span></p>
+    <ul id="footer-links" class="footer-links"></ul>
+  </footer>
+</body>
+</html>

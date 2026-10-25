@@ -1,0 +1,36 @@
+{
+  "name": "local-supabase",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local Supabase emulation (Postgres + PostgREST + minimal Auth/Storage) for development and testing only.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "setup": "node setup.mjs",
+    "start": "node start.mjs",
+    "reset": "node start.mjs --reset",
+    "stop": "node stop.mjs",
+    "selftest": "node selftest.mjs"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "embedded-postgres": "^18.4.0-beta.17",
+    "jose": "^6.2.13",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@supabase/supabase-js": "^2.118.0"
+  },
+  "allowScripts": {
+    "@embedded-postgres/darwin-arm64": true,
+    "@embedded-postgres/darwin-x64": true,
+    "@embedded-postgres/linux-arm": true,
+    "@embedded-postgres/linux-arm64": true,
+    "@embedded-postgres/linux-ia32": true,
+    "@embedded-postgres/linux-ppc64": true,
+    "@embedded-postgres/linux-x64": true,
+    "@embedded-postgres/windows-x64": true
+  }
+}

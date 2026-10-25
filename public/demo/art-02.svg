@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1250" viewBox="0 0 1000 1250">
+  <defs>
+  <filter id="g" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="n"/>
+    <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6000000000000001 0"/>
+  </filter></defs>
+  <rect width="1000" height="1250" fill="#e8ecea"/><path d="M80 1100 V745 A420 420 0 0 1 920 745 V1100 Z" fill="#5d7f78"/><path d="M164 1100 V790.1666666666666 A336 336 0 0 1 836 790.1666666666666 V1100 Z" fill="#27403d"/><path d="M248 1100 V835.3333333333333 A252 252 0 0 1 752 835.3333333333333 V1100 Z" fill="#0f1d1c"/><path d="M332 1100 V880.5 A168 168 0 0 1 668 880.5 V1100 Z" fill="#c9d7cf"/><path d="M416 1100 V925.6666666666666 A83.99999999999999 83.99999999999999 0 0 1 584 925.6666666666666 V1100 Z" fill="#e8ecea"/><rect y="1100" width="1000" height="150" fill="#0f1d1c"/>
+  <rect width="1000" height="1250" filter="url(#g)"/>
+</svg>

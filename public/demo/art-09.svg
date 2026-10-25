@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1000" viewBox="0 0 1500 1000">
+  <defs>
+  <filter id="g" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="n"/>
+    <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6000000000000001 0"/>
+  </filter></defs>
+  <rect width="1500" height="1000" fill="#0f1d1c"/><circle cx="1009.6126578049734" cy="503.3853147644549" r="229.56746413372457" fill="#e8ecea" opacity="0.703629990760237" style="mix-blend-mode:screen"/><circle cx="425.2681026002392" cy="550.8455832488835" r="276.0119444830343" fill="#5d7f78" opacity="0.7210997468791902" style="mix-blend-mode:screen"/><circle cx="336.8300848407671" cy="765.513168880716" r="434.9818920856342" fill="#27403d" opacity="0.5426829081960023" style="mix-blend-mode:screen"/><circle cx="638.0854493239895" cy="328.17568820901215" r="429.3915121397004" fill="#0f1d1c" opacity="0.43481298172846433" style="mix-blend-mode:screen"/><circle cx="400.77842264436185" cy="661.6051231045276" r="281.64760400075465" fill="#c9d7cf" opacity="0.5663106843829155" style="mix-blend-mode:screen"/><circle cx="888.6300980346276" cy="243.83401856757703" r="377.2465497907251" fill="#e8ecea" opacity="0.6765865005552769" style="mix-blend-mode:screen"/><circle cx="363.8121769297868" cy="620.4734847415239" r="375.94587327679625" fill="#5d7f78" opacity="0.48628717688843603" style="mix-blend-mode:screen"/><circle cx="611.6490289801732" cy="610.0012653972954" r="332.32693675439805" fill="#27403d" opacity="0.4759526216425002" style="mix-blend-mode:screen"/><circle cx="855.544340936467" cy="474.06158107332885" r="413.201607610099" fill="#0f1d1c" opacity="0.3883756291121244" style="mix-blend-mode:screen"/>
+  <rect width="1500" height="1000" filter="url(#g)"/>
+</svg>

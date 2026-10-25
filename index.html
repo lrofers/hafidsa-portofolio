@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Portofolio</title>
+  <meta name="description" content="Galeri portofolio imersif 3D.">
+  <meta name="theme-color" content="#f4efe7">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Portofolio">
+  <meta property="og:description" content="Galeri portofolio imersif 3D.">
+  <meta property="og:image" content="">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script type="module" src="/assets/js/main.js"></script>
+</head>
+<body data-page="home">
+  <a class="skip-link" href="#main">Lewati ke konten</a>
+
+  <header class="site-header">
+    <a class="brand" href="/" data-site="owner_name">Nama Anda</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Buka menu"><i data-lucide="menu"></i></button>
+    <nav id="site-nav" class="nav" aria-label="Utama">
+      <ul>
+        <li><a href="/" aria-current="page">Galeri</a></li>
+        <li><a href="/projects.html" data-page-link="projects">Karya</a></li>
+        <li><a href="/about.html" data-page-link="about">Tentang</a></li>
+        <li><a href="/contact.html" data-page-link="contact">Kontak</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- ===== Perjalanan galeri 3D ===== -->
+    <section class="journey" id="journey" aria-label="Galeri 3D interaktif">
+      <div class="journey__stage" id="stage">
+        <canvas id="gallery-canvas" aria-hidden="true"></canvas>
+
+        <div class="hero" id="hero">
+          <p class="eyebrow" data-intro data-site="hero_eyebrow">Galeri Digital</p>
+          <h1 class="hero__title" data-intro data-site="hero_title">Karya yang dipajang.</h1>
+          <p class="hero__sub" data-intro data-site="hero_subtitle">Gulir untuk berjalan melalui galeri.</p>
+          <button class="scroll-cue" id="scroll-cue" type="button" data-intro aria-label="Mulai masuk ke galeri"><span>Gulir</span><i data-lucide="arrow-down"></i></button>
+        </div>
+
+        <div class="caption" id="caption" aria-live="polite">
+          <p class="caption__room eyebrow"></p>
+          <h2 class="caption__title"></h2>
+          <p class="caption__desc"></p>
+          <div class="caption__actions">
+            <button class="btn btn--small caption__enter" type="button" hidden>Masuk ke aula<i data-lucide="arrow-right"></i></button>
+            <button class="btn btn--small caption__open" type="button" hidden>Lihat detail</button>
+            <button class="btn btn--small caption__down" type="button" hidden>Lihat proyek<i data-lucide="arrow-down"></i></button>
+            <span class="caption__steps">
+              <button class="icon-btn" type="button" data-step="-1" aria-label="Karya sebelumnya"><i data-lucide="arrow-left"></i></button>
+              <button class="icon-btn" type="button" data-step="1" aria-label="Karya berikutnya"><i data-lucide="arrow-right"></i></button>
+            </span>
+          </div>
+        </div>
+
+        <aside class="hall-controls" id="hall-controls" aria-label="Kontrol aula patung" hidden>
+          <header class="hall-controls__head">
+            <div>
+              <p class="eyebrow">Aula patung</p>
+              <h2 class="display">Jelajahi aula</h2>
+            </div>
+            <button class="btn btn--small" type="button" data-hall-exit><i data-lucide="arrow-left"></i>Kembali ke galeri</button>
+          </header>
+          <p class="hall-controls__hint">Gulir ke bawah untuk bergerak menuju bingkai berikutnya, seperti saat menjelajahi lorong. Gulir ke atas untuk kembali.</p>
+        </aside>
+
+        <nav class="rooms-nav" id="rooms-nav" aria-label="Lompat ke ruang"></nav>
+        <div class="hover-tip" id="hover-tip" hidden></div>
+        <div class="journey__bar" aria-hidden="true"><i id="journey-bar"></i></div>
+
+        <div class="loader" id="loader" role="status" aria-live="polite">
+          <p class="loader__text">Menyiapkan galeri…</p>
+          <div class="loader__bar"><i></i></div>
+        </div>
+      </div>
+
+      <div class="gallery-fallback" id="gallery-fallback" hidden></div>
+      <ul class="sr-only" id="art-list" aria-label="Daftar karya di galeri"></ul>
+      <noscript><p class="notice">Galeri interaktif memerlukan JavaScript. Silakan aktifkan JavaScript atau buka halaman <a href="/projects.html">Karya</a>.</p></noscript>
+    </section>
+
+    <!-- ===== Proyek unggulan ===== -->
+    <section class="section featured" id="featured" data-section="projects">
+      <header class="section__head">
+        <p class="eyebrow" data-reveal>Pilihan</p>
+        <h2 class="display" data-reveal>Proyek unggulan</h2>
+        <a class="link-arrow" href="/projects.html" data-reveal>Semua proyek<i data-lucide="arrow-right"></i></a>
+      </header>
+      <div class="cards" id="featured-list"></div>
+    </section>
+
+    <!-- ===== Ringkasan About ===== -->
+    <section class="section about-sum" id="about-summary" data-section="about">
+      <figure class="about-sum__photo" id="about-photo" data-reveal></figure>
+      <div class="about-sum__body">
+        <p class="eyebrow" data-reveal>Tentang</p>
+        <h2 class="display" data-reveal data-site="owner_name">Nama Anda</h2>
+        <div class="prose lead" id="about-text" data-reveal></div>
+        <ul class="tag-list" id="about-focus" data-reveal></ul>
+        <a class="link-arrow" href="/about.html" data-reveal>Selengkapnya<i data-lucide="arrow-right"></i></a>
+      </div>
+    </section>
+
+    <!-- ===== Ringkasan Skills ===== -->
+    <section class="section skills-sum" id="skills-summary" data-section="skills">
+      <header class="section__head">
+        <p class="eyebrow" data-reveal>Kemampuan</p>
+        <h2 class="display" data-reveal>Keahlian &amp; alat</h2>
+      </header>
+      <div class="skills-sum__cols">
+        <div id="skills-list" class="skills-list"></div>
+        <div id="software-wrap" data-reveal>
+          <h3 class="eyebrow">Software</h3>
+          <div id="software-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Kontak ===== -->
+    <section class="section contact-cta" id="contact" data-section="contact">
+      <p class="eyebrow" data-reveal>Kontak</p>
+      <a class="contact-cta__big" href="/contact.html" data-reveal>Mari berbincang<i data-lucide="arrow-up-right"></i></a>
+      <a class="link-arrow" id="contact-email" href="#" data-reveal></a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span data-year></span> <span data-site="owner_name"></span></p>
+    <ul id="footer-links" class="footer-links"></ul>
+    <p id="model-credits" class="footer-credit" hidden></p>
+  </footer>
+</body>
+</html>

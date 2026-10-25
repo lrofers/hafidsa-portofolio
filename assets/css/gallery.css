@@ -1,0 +1,121 @@
+/* ==========================================================================
+   gallery.css — panggung galeri 3D di beranda (hero, caption, navigasi ruang, loader, fallback)
+   ========================================================================== */
+
+.journey {
+  --steps: 8;
+  --per: 90;
+  position: relative;
+  height: calc((var(--steps) * var(--per) + 100) * 1vh);
+  height: calc((var(--steps) * var(--per) + 100) * 1svh);
+}
+.journey__stage {
+  position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden;
+  background: var(--wall);
+  isolation: isolate;
+}
+#gallery-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; outline: none; }
+
+/* ---------- hero ---------- */
+.hero {
+  position: absolute; inset: auto 0 0 0; z-index: 3; display: grid; gap: 14px;
+  padding: 0 var(--pad) clamp(40px, 8vh, 96px); padding-top: 38vh;
+  background: linear-gradient(to top, color-mix(in srgb, var(--paper) 92%, transparent) 0%, color-mix(in srgb, var(--paper) 70%, transparent) 45%, transparent 100%);
+  pointer-events: none;
+}
+.hero > * { pointer-events: auto; }
+.hero__title {
+  font-family: var(--serif); font-weight: 500; font-style: italic;
+  font-size: clamp(2.6rem, 7.2vw, 7.4rem); line-height: 0.95; letter-spacing: -0.025em; max-width: 15ch; text-wrap: balance;
+}
+.hero__sub { color: var(--ink-soft); max-width: 42ch; }
+.scroll-cue {
+  justify-self: start; display: inline-flex; align-items: center; gap: 10px; margin-top: 10px; padding: 0;
+  background: none; border: 0; font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
+}
+.scroll-cue svg { width: 18px; height: 18px; animation: cue 2.2s var(--ease) infinite; }
+@keyframes cue { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+/* ---------- caption karya ---------- */
+.caption {
+  position: absolute; left: var(--pad); bottom: clamp(24px, 5vh, 56px); z-index: 4; width: min(420px, calc(100% - 2 * var(--pad)));
+  display: grid; gap: 8px; padding: 22px 24px;
+  background: color-mix(in srgb, var(--paper) 82%, transparent);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border: 1px solid var(--line);
+  opacity: 0; visibility: hidden;
+}
+.caption.is-visible { opacity: 1; visibility: visible; }
+.caption__title { font-family: var(--serif); font-weight: 500; font-size: clamp(1.7rem, 2.6vw, 2.4rem); line-height: 1.05; }
+.caption__desc { font-size: 0.88rem; color: var(--ink-soft); display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.caption__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.caption__steps { display: inline-flex; gap: 8px; margin-left: auto; }
+.caption__steps .icon-btn { width: 36px; height: 36px; }
+
+/* ---------- kontrol saat menjelajahi aula patung ---------- */
+.hall-controls {
+  position: absolute; top: calc(var(--header-h) + 20px); left: var(--pad); z-index: 12;
+  width: min(440px, calc(100% - 2 * var(--pad))); padding: 18px 20px;
+  border: 1px solid var(--line); background: color-mix(in srgb, var(--paper) 90%, transparent);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  box-shadow: 0 12px 36px rgba(27, 25, 22, 0.14);
+}
+.hall-controls[hidden] { display: none; }
+.hall-controls__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.hall-controls__head .display { font-size: clamp(1.5rem, 3vw, 2.1rem); }
+.hall-controls__head .eyebrow { margin-bottom: 4px; }
+.hall-controls__hint { margin-top: 10px; color: var(--ink-soft); font-size: 0.78rem; }
+
+/* ---------- navigasi ruang ---------- */
+.rooms-nav {
+  position: absolute; right: var(--pad); top: 50%; transform: translateY(-50%); z-index: 4;
+  display: grid; gap: 14px; justify-items: end;
+}
+.rooms-nav button {
+  display: inline-flex; align-items: center; gap: 12px; padding: 4px 0; background: none; border: 0;
+  font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft);
+}
+.rooms-nav button span { opacity: 0; transform: translateX(8px); transition: opacity 0.3s, transform 0.3s var(--ease); background: color-mix(in srgb, var(--paper) 80%, transparent); padding: 2px 8px; }
+.rooms-nav button::after { content: ""; width: 7px; height: 7px; border-radius: 50%; border: 1px solid var(--ink); background: transparent; transition: background 0.3s, transform 0.3s; }
+.rooms-nav button:hover span, .rooms-nav button:focus-visible span, .rooms-nav button.is-active span { opacity: 1; transform: none; }
+.rooms-nav button.is-active { color: var(--ink); }
+.rooms-nav button.is-active::after { background: var(--accent); border-color: var(--accent); transform: scale(1.35); }
+
+.hover-tip {
+  position: fixed; left: 0; top: 0; z-index: 60; pointer-events: none; padding: 6px 12px;
+  background: var(--ink); color: var(--paper); font-size: 0.75rem; letter-spacing: 0.06em; white-space: nowrap;
+}
+.hover-tip[hidden] { display: none; }
+
+.journey__bar { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; z-index: 5; background: var(--line); }
+.journey__bar i { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+
+/* ---------- loader ---------- */
+.loader {
+  position: absolute; inset: 0; z-index: 10; display: grid; place-content: center; gap: 18px; text-align: center;
+  background: var(--wall); transition: opacity 0.7s ease, visibility 0.7s;
+}
+.loader.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader__text { font-family: var(--serif); font-style: italic; font-size: 1.4rem; color: var(--ink-soft); }
+.loader__bar { width: min(260px, 60vw); height: 2px; background: var(--line); margin: 0 auto; overflow: hidden; }
+.loader__bar i { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0.04); transition: transform 0.4s var(--ease); }
+
+/* ---------- mode fallback (tanpa WebGL) ---------- */
+.journey--fallback { height: auto; }
+.journey--fallback .journey__stage { position: relative; height: auto; min-height: 70svh; display: grid; align-items: end; background: linear-gradient(180deg, var(--wall), var(--paper)); }
+.journey--fallback #gallery-canvas,
+.journey--fallback .caption,
+.journey--fallback .rooms-nav,
+.journey--fallback .journey__bar,
+.journey--fallback .scroll-cue,
+.journey--fallback .loader { display: none; }
+.journey--fallback .hero { position: relative; background: none; padding-top: calc(var(--header-h) + 8vh); }
+.gallery-fallback { max-width: var(--max); margin: 0 auto; padding: clamp(24px, 5vw, 60px) var(--pad) 0; display: grid; gap: clamp(40px, 6vw, 90px); }
+.fb-note { padding: 14px 18px; border-left: 3px solid var(--accent); background: var(--paper-2); font-size: 0.92rem; }
+.fb-room { display: grid; gap: 20px; }
+.fb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: clamp(20px, 3vw, 40px); }
+.fb-art { display: grid; gap: 8px; width: 100%; padding: 0; border: 0; background: none; text-align: left; }
+.fb-art img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; background: var(--paper-2); transition: transform 0.8s var(--ease); }
+.fb-art:hover img { transform: scale(1.02); }
+.fb-art__t { font-family: var(--serif); font-size: 1.35rem; line-height: 1.1; }
+.fb-art__y { font-size: 0.78rem; color: var(--ink-soft); }

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Kontak</title>
+  <meta name="description" content="Hubungi saya.">
+  <meta name="theme-color" content="#f4efe7">
+  <meta property="og:title" content="Kontak">
+  <meta property="og:description" content="Hubungi saya.">
+  <meta property="og:image" content="">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script type="module" src="/assets/js/main.js"></script>
+</head>
+<body data-page="contact">
+  <a class="skip-link" href="#main">Lewati ke konten</a>
+  <header class="site-header site-header--solid">
+    <a class="brand" href="/" data-site="owner_name">Nama Anda</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Buka menu"><i data-lucide="menu"></i></button>
+    <nav id="site-nav" class="nav" aria-label="Utama">
+      <ul>
+        <li><a href="/">Galeri</a></li>
+        <li><a href="/projects.html" data-page-link="projects">Karya</a></li>
+        <li><a href="/about.html" data-page-link="about">Tentang</a></li>
+        <li><a href="/contact.html" data-page-link="contact">Kontak</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" class="page">
+    <header class="page-head">
+      <p class="eyebrow" data-intro>Kontak</p>
+      <h1 class="display display--xl" data-intro>Mari berbincang</h1>
+      <p class="lead" id="contact-intro" data-intro></p>
+    </header>
+
+    <div class="contact-grid">
+      <div id="contact-info" data-reveal></div>
+
+      <form id="contact-form" class="form" novalidate data-reveal>
+        <div class="field">
+          <label for="f-name">Nama</label>
+          <input id="f-name" name="name" type="text" autocomplete="name" maxlength="120" required aria-describedby="err-name">
+          <p class="field__err" id="err-name" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="f-email">Email</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="err-email">
+          <p class="field__err" id="err-email" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="f-subject">Subjek <span class="muted">(opsional)</span></label>
+          <input id="f-subject" name="subject" type="text" maxlength="200" aria-describedby="err-subject">
+          <p class="field__err" id="err-subject" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="f-message">Pesan</label>
+          <textarea id="f-message" name="message" rows="7" maxlength="5000" required aria-describedby="err-message msg-count"></textarea>
+          <p class="field__hint"><span id="msg-count">0 / 5000</span></p>
+          <p class="field__err" id="err-message" role="alert"></p>
+        </div>
+        <!-- Honeypot: disembunyikan dari pengguna, bot biasanya mengisinya -->
+        <div class="hp" aria-hidden="true">
+          <label for="f-website">Jangan diisi</label>
+          <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <button class="btn" type="submit">Kirim pesan<i data-lucide="send"></i></button>
+        <p class="form-status" id="form-status" role="status" aria-live="polite" hidden></p>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span data-year></span> <span data-site="owner_name"></span></p>
+    <ul id="footer-links" class="footer-links"></ul>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e5dccd"/><stop offset="1" stop-color="#cdbfa8"/></linearGradient></defs>
+  <rect width="800" height="1000" fill="url(#b)"/>
+  <circle cx="400" cy="400" r="130" fill="#a8977c"/>
+  <path d="M120 1000 C120 700 280 620 400 620 C520 620 680 700 680 1000 Z" fill="#a8977c"/>
+  <text x="400" y="930" font-family="Georgia,serif" font-size="30" text-anchor="middle" fill="#6e6149" letter-spacing="6">FOTO PROFIL</text>
+</svg>

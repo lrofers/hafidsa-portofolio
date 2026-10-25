@@ -1,0 +1,5 @@
+# Cloudflare Pages (situs statis + Supabase). Deploy: npm run build && npx wrangler pages deploy
+# Atau hubungkan repositori di dashboard: Build command "npm run build", Build output "dist".
+name = "immersive-portfolio"
+compatibility_date = "2026-10-01"
+pages_build_output_dir = "./dist"

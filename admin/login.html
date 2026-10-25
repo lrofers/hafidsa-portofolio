@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ffffff">
+  <title>Masuk — Admin</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script type="module" src="/assets/js/admin/main.js"></script>
+</head>
+<body class="admin" data-page="login">
+  <main class="login">
+    <div class="login__art" aria-hidden="true"></div>
+    <div class="login__panel" id="login-panel">
+      <div>
+        <p class="small muted" style="letter-spacing:.16em;text-transform:uppercase">Panel admin</p>
+        <h1>Masuk</h1>
+      </div>
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input class="input" id="email" name="email" type="email" autocomplete="username" inputmode="email" required>
+        </div>
+        <div class="field">
+          <label for="password">Kata sandi</label>
+          <div class="input-group">
+            <input class="input" id="password" name="password" type="password" autocomplete="current-password" required>
+            <button class="btn" type="button" data-toggle-pw aria-pressed="false" aria-label="Tampilkan kata sandi"><i data-lucide="eye"></i></button>
+          </div>
+        </div>
+        <p id="login-msg" role="alert" hidden></p>
+        <button class="btn btn--primary" type="submit"><i data-lucide="log-in"></i>Masuk</button>
+        <button class="btn btn--ghost" type="button" id="forgot">Lupa kata sandi?</button>
+      </form>
+      <p class="small muted">Pendaftaran publik tidak tersedia. Akun admin dibuat oleh pemilik situs (lihat README).</p>
+      <p><a class="small" href="/">← Kembali ke situs</a></p>
+    </div>
+  </main>
+</body>
+</html>
