@@ -150,9 +150,12 @@ create table if not exists public.site_settings (
   about_bio        text not null default '',
   about_focus      jsonb not null default '[]'::jsonb,   -- ["Fotografi", "Motion", ...]
   about_extra      jsonb not null default '[]'::jsonb,   -- [{"label":"Bahasa","value":"Indonesia, Inggris"}]
+  hall_cards       jsonb not null default '[]'::jsonb,   -- tiga bingkai informasi profil di aula patung
   created_at       timestamptz not null default now(),
   updated_at       timestamptz not null default now()
 );
+alter table public.site_settings
+  add column if not exists hall_cards jsonb not null default '[]'::jsonb;
 
 -- ---------------------------------------------------------------------
 -- 4. projects, project_images
