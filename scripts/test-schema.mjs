@@ -39,6 +39,13 @@ try {
   await db.exec(sql('seed.sql'));
   ok('seed.sql dijalankan 2x tanpa error', true);
 } catch (e) { ok('seed.sql', false, e.message); process.exit(1); }
+const { rows: hallCardColumn } = await db.query(`
+  select data_type, column_default
+  from information_schema.columns
+  where table_schema = 'public' and table_name = 'site_settings' and column_name = 'hall_cards'
+`);
+ok('site_settings.hall_cards tersedia sebagai JSONB dengan default array kosong',
+  hallCardColumn[0]?.data_type === 'jsonb' && hallCardColumn[0]?.column_default?.includes("'[]'::jsonb"));
 
 await db.exec(`grant select, insert, update, delete on all tables in schema public to anon, authenticated;
                grant select, insert, update, delete on all tables in schema storage to anon, authenticated;
@@ -105,6 +112,8 @@ r = await as('authenticated', u1.id, `insert into public.projects (slug,title,st
 ok('admin bisa insert proyek', !r.error && r.rows.length === 1, r.error);
 r = await as('authenticated', u1.id, `update public.site_settings set owner_name='Admin Test' returning owner_name`);
 ok('admin bisa update settings', r.rows?.[0]?.owner_name === 'Admin Test', r.error);
+r = await as('authenticated', u1.id, `update public.site_settings set hall_cards='[{"title":"Tentang","description":"Kreator"}]'::jsonb returning hall_cards`);
+ok('admin bisa menyimpan konten bingkai aula', r.rows?.[0]?.hall_cards?.[0]?.title === 'Tentang', r.error);
 r = await as('authenticated', u1.id, `insert into storage.objects (bucket_id, name) values ('portfolio','ok.jpg') returning 1`);
 ok('admin bisa upload ke bucket portfolio', !r.error && r.rows.length === 1, r.error);
 r = await as('authenticated', u1.id, `insert into storage.objects (bucket_id, name) values ('lain','ok.jpg')`);

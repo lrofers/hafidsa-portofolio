@@ -311,20 +311,21 @@ export async function createGallery({ trigger, stage, canvas, artworks, settings
   }, { intro: true, bend: [rIn, -1] });
 
   function hallBoardTexture(title, lines) {
-    return canvasTexture(1200, 700, (ctx, w, h) => {
+    return canvasTexture(900, 760, (ctx, w, h) => {
       ctx.fillStyle = '#f7f4ee'; ctx.fillRect(0, 0, w, h);
       ctx.strokeStyle = 'rgba(27,25,22,.2)'; ctx.lineWidth = 3;
       ctx.strokeRect(18, 18, w - 36, h - 36);
       ctx.textAlign = 'left'; ctx.textBaseline = 'top';
-      ctx.fillStyle = '#8b6a3d'; ctx.font = `500 28px ${SANS}`;
-      ctx.fillText('AULA PATUNG', 58, 38);
-      ctx.fillStyle = '#1b1916'; ctx.font = `500 58px ${SERIF}`;
-      ctx.fillText(title, 58, 82);
-      ctx.fillStyle = '#6b655b'; ctx.font = `400 38px ${SANS}`;
-      let y = 190;
+      ctx.fillStyle = '#8b6a3d'; ctx.font = `500 22px ${SANS}`;
+      ctx.fillText('AULA PATUNG', 42, 38);
+      ctx.fillStyle = '#1b1916'; ctx.font = `500 48px ${SERIF}`;
+      const wrappedTitle = wrapText(ctx, title, w - 84).slice(0, 2);
+      wrappedTitle.forEach((part, index) => ctx.fillText(part, 42, 82 + index * 56));
+      ctx.fillStyle = '#514b43'; ctx.font = `500 38px ${SANS}`;
+      let y = wrappedTitle.length > 1 ? 218 : 166;
       lines.forEach((line) => {
-        const wrapped = wrapText(ctx, line, w - 116);
-        wrapped.slice(0, 2).forEach((part) => { if (y < h - 50) ctx.fillText(part, 58, y); y += 52; });
+        const wrapped = wrapText(ctx, line, w - 84);
+        wrapped.slice(0, 2).forEach((part) => { if (y < h - 42) ctx.fillText(part, 42, y); y += 46; });
         y += 10;
       });
     });
@@ -334,11 +335,20 @@ export async function createGallery({ trigger, stage, canvas, artworks, settings
   const detailLines = [...(hallProfile.details || []).map(([label, value]) => `${label}: ${value}`)];
   if (hallProfile.biography) detailLines.push(hallProfile.biography);
   const focusLines = detailLines.filter((line) => /minat|fokus|keahlian|bahasa/i.test(line));
-  const boards = [
-    { angle: hallAngle + Math.PI / 3, title: hallProfile.name || 'Tentang saya', lines: [hallProfile.role, ...detailLines].filter(Boolean).slice(0, 5), portrait: hallProfile.photoUrl },
-    { angle: hallAngle + Math.PI, title: 'Fokus kreatif', lines: focusLines.length ? focusLines : ['Bahasa Inggris', 'Informatika'], portrait: hallProfile.photoUrl },
-    { angle: hallAngle + (5 * Math.PI) / 3, title: 'Tentang saya', lines: hallProfile.biography ? [hallProfile.biography] : ['Jelajahi aula untuk mengenal profil dan karya saya.'], portrait: hallProfile.photoUrl },
+  const defaultBoards = [
+    { title: hallProfile.name || 'Tentang saya', lines: [hallProfile.role, ...detailLines].filter(Boolean).slice(0, 5) },
+    { title: 'Fokus kreatif', lines: focusLines.length ? focusLines : ['Bahasa Inggris', 'Informatika'] },
+    { title: 'Tentang saya', lines: hallProfile.biography ? [hallProfile.biography] : ['Jelajahi aula untuk mengenal profil dan karya saya.'] },
   ];
+  const boards = defaultBoards.map((fallback, index) => {
+    const card = hallProfile.cards?.[index];
+    return {
+      angle: hallAngle + [Math.PI / 3, Math.PI, (5 * Math.PI) / 3][index],
+      title: card ? card.title : fallback.title,
+      lines: card ? card.description.split(/\n+/).map((line) => line.trim()).filter(Boolean).slice(0, 5) : fallback.lines,
+      portrait: hallProfile.photoUrl,
+    };
+  });
   const hallPortraitTexture = hallProfile.photoUrl
     ? new THREE.TextureLoader().load(hallProfile.photoUrl, (texture) => {
       if (destroyed) { texture.dispose(); return; }
@@ -355,29 +365,53 @@ export async function createGallery({ trigger, stage, canvas, artworks, settings
     group.rotation.y = board.angle + Math.PI;
     root.add(group);
     const hasPortrait = !!board.portrait;
-    const backingWidth = 2.6;
-    const backingHeight = 3.35;
+    const backingWidth = 3.2;
+    const backingHeight = 1.8;
     const backing = new THREE.Mesh(new THREE.PlaneGeometry(backingWidth, backingHeight), frameMats.oak);
     group.add(backing);
 
-    const mat = new THREE.Mesh(new THREE.PlaneGeometry(2.42, 3.17), mats.mat);
+    const mat = new THREE.Mesh(new THREE.PlaneGeometry(3.02, 1.62), mats.mat);
     mat.position.z = 0.015;
     group.add(mat);
 
     if (hasPortrait) {
-      const frame = new THREE.Mesh(new THREE.PlaneGeometry(1.52, 1.62), frameMats.oak);
-      frame.position.set(0, 0.78, 0.03);
-      group.add(frame);
       const photoMat = new THREE.MeshBasicMaterial({ color: '#e8e1d3', map: hallPortraitTexture });
-      const photo = new THREE.Mesh(new THREE.PlaneGeometry(1.36, 1.46), photoMat);
-      photo.position.set(0, 0.78, 0.045);
+      const photo = new THREE.Mesh(new THREE.PlaneGeometry(1.28, 1.44), photoMat);
+      photo.position.set(-0.78, 0, 0.035);
       group.add(photo);
     }
 
     const textTexture = hallBoardTexture(board.title, board.lines);
-    const text = new THREE.Mesh(new THREE.PlaneGeometry(2.3, 1.3), new THREE.MeshBasicMaterial({ map: textTexture }));
-    text.position.set(0, -0.88, 0.04);
+    const text = new THREE.Mesh(new THREE.PlaneGeometry(1.58, 1.44), new THREE.MeshBasicMaterial({ map: textTexture }));
+    text.position.set(0.7, 0, 0.04);
     group.add(text);
+
+    const brass = frameMats.gold;
+    const sconceGlow = new THREE.MeshStandardMaterial({
+      color: '#fff0c8',
+      emissive: '#ffd27a',
+      emissiveIntensity: 1.8,
+      roughness: 0.32,
+    });
+    [-1, 1].forEach((side) => {
+      const plate = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.34, 0.06), brass);
+      plate.position.set(side * 1.82, 0.02, 0.075);
+      group.add(plate);
+      const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.2, 8), brass);
+      arm.rotation.x = Math.PI / 2;
+      arm.position.set(side * 1.82, 0.05, 0.18);
+      group.add(arm);
+      const shade = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.2, 12), brass);
+      shade.position.set(side * 1.82, 0.02, 0.25);
+      shade.rotation.x = Math.PI;
+      group.add(shade);
+      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.075, 12, 8), sconceGlow);
+      bulb.position.set(side * 1.82, 0.02, 0.32);
+      group.add(bulb);
+    });
+    const sconceLight = new THREE.PointLight('#ffe3a8', 3.5, 4.5, 2);
+    sconceLight.position.set(0, 0.12, 0.38);
+    group.add(sconceLight);
   });
 
   // judul ruang di atas ambang pintu, di muka partisi yang menghadap kamera

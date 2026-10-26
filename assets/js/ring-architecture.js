@@ -200,9 +200,47 @@ export function buildCentralHall({ root, mats, layout, addMesh }) {
   const { H } = D;
   const TAU = Math.PI * 2;
   const SKY = 2.4;
+  const brass = new THREE.MeshStandardMaterial({ color: '#b8923f', metalness: 0.72, roughness: 0.32 });
+  const glow = new THREE.MeshStandardMaterial({
+    color: '#fff0c8',
+    emissive: '#ffd27a',
+    emissiveIntensity: 1.6,
+    roughness: 0.3,
+  });
   addMesh(sectorGeometry(0, rIn, 0, TAU), mats.floor, 0, 0, 0);
   addMesh(sectorGeometry(SKY, rIn, 0, TAU, { up: false }), mats.ceiling, 0, H, 0, { receive: false });
   addMesh(sectorGeometry(0, SKY, 0, TAU, { up: false }), mats.strip, 0, H - 0.005, 0, { receive: false });   // lubang cahaya
+  const ceilingRim = new THREE.Mesh(new THREE.TorusGeometry(SKY - 0.04, 0.055, 8, 64), brass);
+  ceilingRim.rotation.x = Math.PI / 2;
+  ceilingRim.position.y = H - 0.035;
+  root.add(ceilingRim);
+
+  const chandelier = new THREE.Group();
+  chandelier.position.y = H - 0.42;
+  root.add(chandelier);
+  const ringGeometry = new THREE.TorusGeometry(1.45, 0.035, 8, 48);
+  const lowerRingGeometry = new THREE.TorusGeometry(0.95, 0.028, 8, 40);
+  const ring = new THREE.Mesh(ringGeometry, brass);
+  ring.rotation.x = Math.PI / 2;
+  chandelier.add(ring);
+  const lowerRing = new THREE.Mesh(lowerRingGeometry, brass);
+  lowerRing.rotation.x = Math.PI / 2;
+  lowerRing.position.y = -0.38;
+  chandelier.add(lowerRing);
+  chandelier.add(new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.07, 0.52, 12), brass));
+  for (let i = 0; i < 8; i++) {
+    const angle = (i / 8) * TAU;
+    const x = Math.sin(angle);
+    const z = Math.cos(angle);
+    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.54, 6), brass);
+    arm.position.set(x * 1.2, -0.18, z * 1.2);
+    arm.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(x, 0, z));
+    chandelier.add(arm);
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.105, 12, 8), glow);
+    bulb.position.set(x * 1.45, -0.24, z * 1.45);
+    chandelier.add(bulb);
+  }
+
   addMesh(new THREE.CylinderGeometry(2.9, 2.9, 0.12, 64), mats.trim, 0, 0.06, 0);
   addMesh(new THREE.CylinderGeometry(2.4, 2.4, 0.12, 64), mats.trim, 0, 0.18, 0);
   return { center: [0, 0.24, 0] };

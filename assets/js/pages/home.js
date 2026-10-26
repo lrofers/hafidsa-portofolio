@@ -74,7 +74,7 @@ function renderContact(settings) {
 }
 
 function hallProfileContent(settings) {
-  const privateInfo = /\b(?:alamat|address|rumah|home|umur|usia|age|sekolah|school|pendidikan|education|institusi|institution|smp|sma|sd)\b|\b1[0-7]\s*tahun\b/i;
+  const privateInfo = /\b(?:alamat|address|rumah|home|umur|usia|age|sekolah|school|pendidikan|education|institusi|institution|smp|sma|sd)\b|\b1[0-7]\s*tahun\b|[\w.+-]+@[\w.-]+\.[a-z]{2,}/i;
   const bio = String(settings.about_bio || '').trim();
   const details = [
     ['Lokasi', 'Tanah Laut, Kalimantan Selatan, Indonesia'],
@@ -91,12 +91,27 @@ function hallProfileContent(settings) {
     const value = String(item?.value || '').trim();
     if (label && value && publicLabel.test(label) && !privateInfo.test(value)) details.push([label, value]);
   });
+  const storedCards = Array.isArray(settings.hall_cards) ? settings.hall_cards : [];
+  const cards = storedCards.length === 3
+    ? storedCards.map((card) => {
+        const title = String(card?.title || '').trim();
+        const description = String(card?.description || '').trim();
+        return privateInfo.test(`${title}\n${description}`)
+          ? { title: '', description: '' }
+          : { title, description };
+      })
+    : [
+        { title: settings.owner_name || 'Tentang saya', description: [settings.owner_role, ...details.map(([label, value]) => `${label}: ${value}`)].filter(Boolean).join('\n') },
+        { title: 'Fokus kreatif', description: focus.length ? focus.join('\n') : 'Bahasa Inggris\nInformatika' },
+        { title: 'Tentang saya', description: bio && !privateInfo.test(bio) ? bio.split(/\n{2,}/)[0] : 'Jelajahi aula untuk mengenal profil dan karya saya.' },
+      ];
   return {
     name: settings.owner_name || '',
     role: settings.owner_role || '',
     photoUrl: settings.profile?.url || '',
     biography: bio && !privateInfo.test(bio) ? bio.split(/\n{2,}/)[0] : '',
     details,
+    cards,
   };
 }
 

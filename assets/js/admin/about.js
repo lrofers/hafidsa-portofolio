@@ -14,7 +14,40 @@ const PROFILE_FIELDS = [
   { name: 'about_bio', label: 'Biografi', type: 'textarea', rows: 10, full: true, help: 'Pisahkan paragraf dengan satu baris kosong. Paragraf pertama juga tampil sebagai ringkasan di beranda.' },
   { name: 'about_focus', label: 'Fokus kreatif', type: 'tags', full: true, help: 'Tekan Enter setelah setiap item.' },
   { name: 'about_extra', label: 'Informasi tambahan', type: 'pairs', full: true, help: 'Pasangan label & isi, mis. Bahasa — Indonesia, Inggris; Domisili — Bandung.' },
+  { html: '<div class="field full"><h3>Kartu Aula Patung</h3><p class="field__help">Edit judul dan deskripsi setiap kartu yang tampil di bingkai Aula Patung. Semua perubahan disimpan lewat tombol di bagian bawah formulir dan tampil di website publik; jangan masukkan alamat rumah, email pribadi, umur, atau detail sekolah.</p></div>' },
+  { name: 'hall_card_1_title', label: 'Bingkai 1 — Judul', type: 'text', maxlength: 80 },
+  { name: 'hall_card_1_description', label: 'Bingkai 1 — Deskripsi', type: 'textarea', rows: 4, full: true, maxlength: 600 },
+  { name: 'hall_card_2_title', label: 'Bingkai 2 — Judul', type: 'text', maxlength: 80 },
+  { name: 'hall_card_2_description', label: 'Bingkai 2 — Deskripsi', type: 'textarea', rows: 4, full: true, maxlength: 600 },
+  { name: 'hall_card_3_title', label: 'Bingkai 3 — Judul', type: 'text', maxlength: 80 },
+  { name: 'hall_card_3_description', label: 'Bingkai 3 — Deskripsi', type: 'textarea', rows: 4, full: true, maxlength: 600 },
 ];
+
+const privateHallInfo = /\b(?:alamat|address|rumah|home|umur|usia|age|sekolah|school|pendidikan|education|institusi|institution|smp|sma|sd)\b|\b1[0-7]\s*tahun\b|[\w.+-]+@[\w.-]+\.[a-z]{2,}/i;
+
+function profileFormSettings(settings) {
+  const cards = Array.isArray(settings.hall_cards) && settings.hall_cards.length === 3
+    ? settings.hall_cards
+    : [
+        {
+          title: settings.owner_name || 'Tentang saya',
+          description: [settings.owner_role, ...(settings.about_extra || [])
+            .filter((item) => item?.label && item?.value && /bahasa|minat|fokus|keahlian|skill|hobi/i.test(item.label) && !privateHallInfo.test(`${item.label} ${item.value}`))
+            .map((item) => `${item.label}: ${item.value}`)].filter((value) => value && !privateHallInfo.test(value)).join('\n'),
+        },
+        { title: 'Fokus kreatif', description: (settings.about_focus || []).filter((value) => value && !privateHallInfo.test(String(value))).join('\n') },
+        { title: 'Tentang saya', description: settings.about_bio && !privateHallInfo.test(settings.about_bio) ? settings.about_bio : '' },
+      ];
+  return {
+    ...settings,
+    hall_card_1_title: cards[0]?.title || '',
+    hall_card_1_description: cards[0]?.description || '',
+    hall_card_2_title: cards[1]?.title || '',
+    hall_card_2_description: cards[1]?.description || '',
+    hall_card_3_title: cards[2]?.title || '',
+    hall_card_3_description: cards[2]?.description || '',
+  };
+}
 
 const TABLES = {
   experiences: {
@@ -56,8 +89,8 @@ export async function init() {
   $('#view').innerHTML = `
     <form class="card" id="profile-form" novalidate>
       <div class="card__head"><div><h2>Profil & biografi</h2><p>Semua isi halaman Tentang dapat diubah di sini — jangan biarkan teks contoh tampil di situs Anda.</p></div></div>
-      <div class="card__body">${formHTML(PROFILE_FIELDS, settings)}
-        <div class="form-actions"><button class="btn btn--primary" type="submit"><i data-lucide="save"></i>Simpan profil</button></div>
+      <div class="card__body">${formHTML(PROFILE_FIELDS, profileFormSettings(settings))}
+        <div class="form-actions"><button class="btn btn--primary" type="submit"><i data-lucide="save"></i>Simpan profil & kartu aula</button></div>
       </div>
     </form>
     <section class="card" data-table="experiences"></section>
@@ -71,12 +104,22 @@ export async function init() {
     e.preventDefault();
     const problem = profileCtl.validate();
     if (problem) { if (problem !== 'invalid') toast(problem, 'error'); return; }
+    const values = profileCtl.read();
+    const hallCards = [1, 2, 3].map((i) => ({
+      title: values[`hall_card_${i}_title`],
+      description: values[`hall_card_${i}_description`],
+    }));
+    if (hallCards.some((card) => privateHallInfo.test(`${card.title}\n${card.description}`))) {
+      toast('Informasi pribadi terdeteksi. Jangan masukkan alamat, umur, sekolah, atau email pribadi ke bingkai publik.', 'error');
+      return;
+    }
     await busy(form.querySelector('[type="submit"]'), async () => {
       try {
-        const v = profileCtl.read();
+        const v = values;
         await saveSettings({
           about_heading: v.about_heading, owner_role: v.owner_role || '', profile_media_id: v.profile_media_id,
           about_bio: v.about_bio || '', about_focus: v.about_focus, about_extra: v.about_extra,
+          hall_cards: hallCards,
         });
         profileCtl.markClean();
         toast('Profil disimpan.');
