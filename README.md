@@ -282,7 +282,7 @@ Isi variabel `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY` **saat build** (ni
 4. **Environment variables** (Production & Preview): `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, dan `NODE_VERSION` = `22`.
 5. Deploy. Tambahkan domain situs ke Supabase *Site URL / Redirect URLs*.
 
-Alternatif lewat CLI: `npm run build && npx wrangler pages deploy` (membaca `wrangler.toml`).
+Alternatif lewat CLI: autentikasi dulu dengan `npx wrangler login`, lalu jalankan `npm run deploy:pages`. Perintah ini membangun situs dan mengirim folder `dist` ke proyek Pages `hafidsa-portofolio`. Jangan gunakan `npx wrangler deploy` untuk situs ini: perintah itu untuk Cloudflare Workers, sedangkan proyek ini menggunakan Cloudflare Pages.
 
 Catatan: build otomatis menghasilkan `dist/_headers` berisi header keamanan + **Content-Security-Policy yang sudah memuat origin Supabase Anda** (dari `VITE_SUPABASE_URL`). Cloudflare Pages menyajikan `about.html` juga di `/about` — semua tautan tetap bekerja. Formulir kontak otomatis memakai fungsi database karena tidak ada server.
 
