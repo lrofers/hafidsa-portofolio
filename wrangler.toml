@@ -1,4 +1,4 @@
-# Cloudflare Pages (situs statis + Supabase). Deploy: npm run build && npx wrangler pages deploy
+# Cloudflare Pages (situs statis + Supabase). Deploy: npm run deploy:pages
 # Atau hubungkan repositori di dashboard: Build command "npm run build", Build output "dist".
 name = "hafidsa-portofolio"
 compatibility_date = "2026-10-01"
