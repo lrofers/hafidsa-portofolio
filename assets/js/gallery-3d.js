@@ -219,7 +219,20 @@ export async function createGallery({ trigger, stage, canvas, artworks, settings
   const hall = buildCentralHall({ root, mats, layout, addMesh });
   const hallSpot = new THREE.SpotLight('#fff4e0', 40, 9, 0.55, 0.6, 2);
   hallSpot.position.set(0, D.H - 0.1, 0); hallSpot.target.position.set(0, 1.5, 0);
+  if (useShadows) {
+    hallSpot.castShadow = true;
+    hallSpot.shadow.mapSize.set(Math.min(Q.mapSize, 1024), Math.min(Q.mapSize, 1024));
+    hallSpot.shadow.camera.near = 0.3;
+    hallSpot.shadow.camera.far = 10;
+    hallSpot.shadow.bias = -0.0003;
+    hallSpot.shadow.normalBias = 0.025;
+    hallSpot.shadow.radius = 5;
+  }
   scene.add(hallSpot, hallSpot.target);
+  const statueContactShadow = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 1.8), shadowMat);
+  statueContactShadow.rotation.x = -Math.PI / 2;
+  statueContactShadow.position.set(0, hall.center[1] + 0.008, 0);
+  root.add(statueContactShadow);
 
   // patung dimuat asinkron; galeri tidak menunggu (cadangan buatan kode bila berkas model belum ada)
   let statues = null;
@@ -367,11 +380,19 @@ export async function createGallery({ trigger, stage, canvas, artworks, settings
     const hasPortrait = !!board.portrait;
     const backingWidth = 3.2;
     const backingHeight = 1.8;
+    const boardShadow = new THREE.Mesh(
+      new THREE.PlaneGeometry(backingWidth + 0.55, backingHeight + 0.42),
+      shadowMat,
+    );
+    boardShadow.position.z = -0.018;
+    group.add(boardShadow);
     const backing = new THREE.Mesh(new THREE.PlaneGeometry(backingWidth, backingHeight), frameMats.oak);
+    backing.castShadow = useShadows;
     group.add(backing);
 
     const mat = new THREE.Mesh(new THREE.PlaneGeometry(3.02, 1.62), mats.mat);
     mat.position.z = 0.015;
+    mat.receiveShadow = useShadows;
     group.add(mat);
 
     if (hasPortrait) {
