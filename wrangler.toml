@@ -1,5 +1,5 @@
-# Cloudflare Pages (situs statis + Supabase). Deploy: npm run deploy:pages
-# Atau hubungkan repositori di dashboard: Build command "npm run build", Build output "dist".
 name = "hafidsa-portofolio"
-compatibility_date = "2026-10-01"
-pages_build_output_dir = "./dist"
+compatibility_date = "2026-10-25"
+
+[assets]
+directory = "./dist"
