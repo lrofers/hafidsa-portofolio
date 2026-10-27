@@ -16,10 +16,13 @@ const PROFILE_FIELDS = [
   { name: 'about_extra', label: 'Informasi tambahan', type: 'pairs', full: true, help: 'Pasangan label & isi, mis. Bahasa — Indonesia, Inggris; Domisili — Bandung.' },
   { html: '<div class="field full"><h3>Kartu Aula Patung</h3><p class="field__help">Edit judul dan deskripsi setiap kartu yang tampil di bingkai Aula Patung. Semua perubahan disimpan lewat tombol di bagian bawah formulir dan tampil di website publik; jangan masukkan alamat rumah, email pribadi, umur, atau detail sekolah.</p></div>' },
   { name: 'hall_card_1_title', label: 'Bingkai 1 — Judul', type: 'text', maxlength: 80 },
+  { name: 'hall_card_1_image_media_id', label: 'Bingkai 1 — Foto', type: 'media', full: true, help: 'Kosongkan untuk menggunakan foto profil utama.' },
   { name: 'hall_card_1_description', label: 'Bingkai 1 — Deskripsi', type: 'textarea', rows: 4, full: true, maxlength: 600 },
   { name: 'hall_card_2_title', label: 'Bingkai 2 — Judul', type: 'text', maxlength: 80 },
+  { name: 'hall_card_2_image_media_id', label: 'Bingkai 2 — Foto', type: 'media', full: true, help: 'Kosongkan untuk menggunakan foto profil utama.' },
   { name: 'hall_card_2_description', label: 'Bingkai 2 — Deskripsi', type: 'textarea', rows: 4, full: true, maxlength: 600 },
   { name: 'hall_card_3_title', label: 'Bingkai 3 — Judul', type: 'text', maxlength: 80 },
+  { name: 'hall_card_3_image_media_id', label: 'Bingkai 3 — Foto', type: 'media', full: true, help: 'Kosongkan untuk menggunakan foto profil utama.' },
   { name: 'hall_card_3_description', label: 'Bingkai 3 — Deskripsi', type: 'textarea', rows: 4, full: true, maxlength: 600 },
 ];
 
@@ -41,10 +44,13 @@ function profileFormSettings(settings) {
   return {
     ...settings,
     hall_card_1_title: cards[0]?.title || '',
+    hall_card_1_image_media_id: cards[0]?.image_media_id || null,
     hall_card_1_description: cards[0]?.description || '',
     hall_card_2_title: cards[1]?.title || '',
+    hall_card_2_image_media_id: cards[1]?.image_media_id || null,
     hall_card_2_description: cards[1]?.description || '',
     hall_card_3_title: cards[2]?.title || '',
+    hall_card_3_image_media_id: cards[2]?.image_media_id || null,
     hall_card_3_description: cards[2]?.description || '',
   };
 }
@@ -107,6 +113,7 @@ export async function init() {
     const values = profileCtl.read();
     const hallCards = [1, 2, 3].map((i) => ({
       title: values[`hall_card_${i}_title`],
+      image_media_id: values[`hall_card_${i}_image_media_id`],
       description: values[`hall_card_${i}_description`],
     }));
     if (hallCards.some((card) => privateHallInfo.test(`${card.title}\n${card.description}`))) {

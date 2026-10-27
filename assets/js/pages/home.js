@@ -97,13 +97,13 @@ function hallProfileContent(settings) {
         const title = String(card?.title || '').trim();
         const description = String(card?.description || '').trim();
         return privateInfo.test(`${title}\n${description}`)
-          ? { title: '', description: '' }
-          : { title, description };
+          ? { title: '', description: '', photoUrl: card?.photo?.url || '' }
+          : { title, description, photoUrl: card?.photo?.url || '' };
       })
     : [
-        { title: settings.owner_name || 'Tentang saya', description: [settings.owner_role, ...details.map(([label, value]) => `${label}: ${value}`)].filter(Boolean).join('\n') },
-        { title: 'Fokus kreatif', description: focus.length ? focus.join('\n') : 'Bahasa Inggris\nInformatika' },
-        { title: 'Tentang saya', description: bio && !privateInfo.test(bio) ? bio.split(/\n{2,}/)[0] : 'Jelajahi aula untuk mengenal profil dan karya saya.' },
+        { title: settings.owner_name || 'Tentang saya', description: [settings.owner_role, ...details.map(([label, value]) => `${label}: ${value}`)].filter(Boolean).join('\n'), photoUrl: '' },
+        { title: 'Fokus kreatif', description: focus.length ? focus.join('\n') : 'Bahasa Inggris\nInformatika', photoUrl: '' },
+        { title: 'Tentang saya', description: bio && !privateInfo.test(bio) ? bio.split(/\n{2,}/)[0] : 'Jelajahi aula untuk mengenal profil dan karya saya.', photoUrl: '' },
       ];
   return {
     name: settings.owner_name || '',

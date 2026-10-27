@@ -93,6 +93,12 @@ export function buildRingArchitecture({ root, mats, layout, addMesh, box }) {
   // dinding busur tanpa tebal terlihat dari kedua sisi
   const wallMat = mats.wall.clone(); wallMat.side = THREE.DoubleSide;
   const trimMat = mats.trim.clone(); trimMat.side = THREE.DoubleSide;
+  const brassLine = new THREE.MeshStandardMaterial({
+    color: '#b8923f',
+    metalness: 0.5,
+    roughness: 0.48,
+    side: THREE.DoubleSide,
+  });
 
   addMesh(sectorGeometry(rIn, rOut, 0, TAU), mats.floor, 0, 0, 0);
   addMesh(sectorGeometry(rIn, rOut, 0, TAU, { up: false }), mats.ceiling, 0, H, 0, { receive: false });
@@ -101,6 +107,9 @@ export function buildRingArchitecture({ root, mats, layout, addMesh, box }) {
   // dinding luar utuh
   addMesh(arcWallGeometry(rOut, 0, TAU, H), wallMat, 0, 0, 0);
   addMesh(arcWallGeometry(rOut - 0.03, 0, TAU, 0.16), trimMat, 0, 0, 0, { receive: false });
+  [0.28, H - 0.28].forEach((y) => {
+    addMesh(arcWallGeometry(rOut - 0.045, 0, TAU, 0.035, y), brassLine, 0, 0, 0, { receive: false });
+  });
 
   // Dinding dalam: potongan di antara bay + penutup (lintel) di atas tiap bay.
   const bayHalf = BAY_W / 2 / rIn;
@@ -201,6 +210,8 @@ export function buildCentralHall({ root, mats, layout, addMesh }) {
   const TAU = Math.PI * 2;
   const SKY = 2.4;
   const brass = new THREE.MeshStandardMaterial({ color: '#b8923f', metalness: 0.72, roughness: 0.32 });
+  const floorBrass = brass.clone();
+  floorBrass.side = THREE.DoubleSide;
   const glow = new THREE.MeshStandardMaterial({
     color: '#fff0c8',
     emissive: '#ffd27a',
@@ -210,6 +221,20 @@ export function buildCentralHall({ root, mats, layout, addMesh }) {
   addMesh(sectorGeometry(0, rIn, 0, TAU), mats.floor, 0, 0, 0);
   addMesh(sectorGeometry(SKY, rIn, 0, TAU, { up: false }), mats.ceiling, 0, H, 0, { receive: false });
   addMesh(sectorGeometry(0, SKY, 0, TAU, { up: false }), mats.strip, 0, H - 0.005, 0, { receive: false });   // lubang cahaya
+  [3.15, 3.42].forEach((radius) => {
+    const inlay = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.018, 6, 96), floorBrass);
+    inlay.rotation.x = Math.PI / 2;
+    inlay.position.y = 0.012;
+    root.add(inlay);
+  });
+  const floorTick = new THREE.BoxGeometry(0.025, 0.012, 0.18);
+  for (let i = 0; i < 16; i++) {
+    const angle = (i / 16) * TAU;
+    const tick = new THREE.Mesh(floorTick, floorBrass);
+    tick.position.set(Math.sin(angle) * 3.285, 0.012, Math.cos(angle) * 3.285);
+    tick.rotation.y = angle;
+    root.add(tick);
+  }
   const ceilingRim = new THREE.Mesh(new THREE.TorusGeometry(SKY - 0.04, 0.055, 8, 64), brass);
   ceilingRim.rotation.x = Math.PI / 2;
   ceilingRim.position.y = H - 0.035;

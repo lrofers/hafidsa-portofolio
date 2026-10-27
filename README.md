@@ -199,7 +199,7 @@ Salin nilai dari `tools/local-supabase/.env.local` ke `.env` (`VITE_SUPABASE_URL
    - 13 tabel: `profiles`, `site_settings`, `projects`, `project_images`, `gallery_artworks`, `skills`, `software_tools`, `project_software`, `experiences`, `education`, `social_links`, `media_assets`, `contact_messages` — dengan primary key, foreign key, timestamp + trigger `updated_at`, indeks, dan constraint (slug, URL `https://`, rentang tahun, status, dll.).
    - Fungsi `is_admin()`, trigger profil otomatis untuk pengguna baru (role `user`), `bootstrap_first_admin()`, `submit_contact_message()`, view `media_usage`.
    - Kebijakan RLS seluruh tabel, bucket Storage `portfolio`, dan kebijakan `storage.objects`.
-   Jika database sudah pernah dibuat, jalankan ulang `database/schema.sql` untuk menambahkan kolom `site_settings.hall_cards`; setelah itu tiga bingkai Aula Patung dapat diedit dari **Admin › Tentang**. Isi bingkai tampil publik, jadi jangan masukkan alamat rumah, umur, sekolah, atau email pribadi.
+   Jika database sudah pernah dibuat, jalankan ulang `database/schema.sql` untuk menambahkan kolom `site_settings.hall_cards`; setelah itu judul, deskripsi, dan foto untuk ketiga bingkai Aula Patung dapat diedit dari **Admin › Tentang**. Foto bingkai boleh berbeda satu sama lain; kosongkan pilihan foto untuk memakai foto profil utama. Isi bingkai tampil publik, jadi jangan masukkan alamat rumah, umur, sekolah, atau email pribadi.
 3. (Opsional tapi disarankan) jalankan **`database/seed.sql`** untuk data demo agar galeri langsung terisi. Semua isinya placeholder — ganti dari admin.
 4. **Project Settings › API**: salin *Project URL* dan *publishable key* (atau *anon public key*) ke `.env`:
    ```env

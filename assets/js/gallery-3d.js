@@ -359,25 +359,71 @@ export async function createGallery({ trigger, stage, canvas, artworks, settings
       angle: hallAngle + [Math.PI / 3, Math.PI, (5 * Math.PI) / 3][index],
       title: card ? card.title : fallback.title,
       lines: card ? card.description.split(/\n+/).map((line) => line.trim()).filter(Boolean).slice(0, 5) : fallback.lines,
-      portrait: hallProfile.photoUrl,
+      photoUrl: card?.photoUrl || hallProfile.photoUrl,
     };
   });
-  const hallPortraitTexture = hallProfile.photoUrl
-    ? new THREE.TextureLoader().load(hallProfile.photoUrl, (texture) => {
-      if (destroyed) { texture.dispose(); return; }
-      texture.colorSpace = THREE.SRGBColorSpace;
-      texture.anisotropy = maxAniso;
-      invalidate();
-    }, undefined, (error) => console.warn('Foto aula tidak dapat dimuat:', error?.message || error))
-    : null;
+  const hallPortraitTextures = new Map();
+  const hallPortraitLoader = new THREE.TextureLoader();
+  const hallPortraitTexture = (url) => {
+    if (!url) return null;
+    if (!hallPortraitTextures.has(url)) {
+      const texture = hallPortraitLoader.load(url, (loaded) => {
+        if (destroyed) { loaded.dispose(); return; }
+        loaded.colorSpace = THREE.SRGBColorSpace;
+        loaded.anisotropy = maxAniso;
+        invalidate();
+      }, undefined, (error) => console.warn('Foto aula tidak dapat dimuat:', error?.message || error));
+      hallPortraitTextures.set(url, texture);
+    }
+    return hallPortraitTextures.get(url);
+  };
   const hallTourAngles = boards.map((board) => board.angle);
+  const sconceGlow = new THREE.MeshStandardMaterial({
+    color: '#fff0c8',
+    emissive: '#ffd27a',
+    emissiveIntensity: 1.8,
+    roughness: 0.32,
+  });
+  const sconcePlateGeometry = new THREE.BoxGeometry(0.22, 0.42, 0.07);
+  const sconceArmGeometry = new THREE.CylinderGeometry(0.025, 0.025, 0.2, 8);
+  const sconceShadeGeometry = new THREE.ConeGeometry(0.14, 0.2, 12);
+  const sconceBulbGeometry = new THREE.SphereGeometry(0.075, 12, 8);
+  const addGallerySconce = (angle) => {
+    const [x, z] = polar(rOut - 0.045, angle);
+    const fixture = new THREE.Group();
+    fixture.position.set(x, 2.65, z);
+    fixture.rotation.y = angle + Math.PI;
+    root.add(fixture);
+
+    const plate = new THREE.Mesh(sconcePlateGeometry, frameMats.gold);
+    plate.position.z = 0.02;
+    fixture.add(plate);
+    const arm = new THREE.Mesh(sconceArmGeometry, frameMats.gold);
+    arm.rotation.x = Math.PI / 2;
+    arm.position.set(0, 0.02, 0.15);
+    fixture.add(arm);
+    const shade = new THREE.Mesh(sconceShadeGeometry, frameMats.gold);
+    shade.position.set(0, -0.07, 0.22);
+    shade.rotation.z = Math.PI;
+    fixture.add(shade);
+    const bulb = new THREE.Mesh(sconceBulbGeometry, sconceGlow);
+    bulb.position.set(0, -0.15, 0.24);
+    fixture.add(bulb);
+  };
+  const decoratedSpans = [{ a0: 0, a1: layout.foyer.a1 }, ...layout.rooms];
+  decoratedSpans.forEach(({ a0, a1 }) => {
+    const inset = Math.min(1.1 / rOut, (a1 - a0) / 4);
+    addGallerySconce(a0 + inset);
+    addGallerySconce(a1 - inset);
+  });
+
   boards.forEach((board) => {
     const [x, z] = polar(hallRadiusOnWall, board.angle);
     const group = new THREE.Group();
     group.position.set(x, 2.05, z);
     group.rotation.y = board.angle + Math.PI;
     root.add(group);
-    const hasPortrait = !!board.portrait;
+    const hasPortrait = !!board.photoUrl;
     const backingWidth = 3.2;
     const backingHeight = 1.8;
     const boardShadow = new THREE.Mesh(
@@ -396,7 +442,7 @@ export async function createGallery({ trigger, stage, canvas, artworks, settings
     group.add(mat);
 
     if (hasPortrait) {
-      const photoMat = new THREE.MeshBasicMaterial({ color: '#e8e1d3', map: hallPortraitTexture });
+      const photoMat = new THREE.MeshBasicMaterial({ color: '#e8e1d3', map: hallPortraitTexture(board.photoUrl) });
       const photo = new THREE.Mesh(new THREE.PlaneGeometry(1.28, 1.44), photoMat);
       photo.position.set(-0.78, 0, 0.035);
       group.add(photo);
@@ -408,12 +454,6 @@ export async function createGallery({ trigger, stage, canvas, artworks, settings
     group.add(text);
 
     const brass = frameMats.gold;
-    const sconceGlow = new THREE.MeshStandardMaterial({
-      color: '#fff0c8',
-      emissive: '#ffd27a',
-      emissiveIntensity: 1.8,
-      roughness: 0.32,
-    });
     [-1, 1].forEach((side) => {
       const plate = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.34, 0.06), brass);
       plate.position.set(side * 1.82, 0.02, 0.075);

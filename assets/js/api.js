@@ -76,7 +76,20 @@ export function loadSettings() {
     const { data, error } = await supabase.from('site_settings').select(SETTINGS_SELECT).eq('id', 1).maybeSingle();
     if (error) fail(error, 'pengaturan situs');
     if (!data) throw new Error('Baris site_settings belum ada. Jalankan database/seed.sql (atau INSERT INTO site_settings (id) VALUES (1)).');
-    return normSettings(data);
+    const settings = normSettings(data);
+    const cards = Array.isArray(settings.hall_cards) ? settings.hall_cards : [];
+    const mediaIds = [...new Set(cards.map((card) => card?.image_media_id).filter(Boolean))];
+    if (!mediaIds.length) return settings;
+    const { data: media, error: mediaError } = await supabase.from('media_assets').select('*').in('id', mediaIds);
+    if (mediaError) fail(mediaError, 'foto bingkai Aula Patung');
+    const mediaById = new Map(media.map((item) => [item.id, toImage(item)]));
+    return {
+      ...settings,
+      hall_cards: cards.map((card) => ({
+        ...card,
+        photo: mediaById.get(card?.image_media_id) || null,
+      })),
+    };
   })();
   return settingsPromise;
 }
